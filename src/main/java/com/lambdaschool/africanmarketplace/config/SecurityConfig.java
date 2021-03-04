@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 @Configuration
 @EnableWebSecurity
 // This allows us to further restrict access to an endpoint inside of a controller.
-@EnableGlobalMethodSecurity (prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig
     extends WebSecurityConfigurerAdapter
 {

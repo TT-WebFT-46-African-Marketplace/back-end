@@ -4,7 +4,8 @@ import com.lambdaschool.africanmarketplace.models.Useremail;
 
 import java.util.List;
 
-public interface UseremailService {
+public interface UseremailService
+{
     /**
      * Returns a list of all users and their emails
      *

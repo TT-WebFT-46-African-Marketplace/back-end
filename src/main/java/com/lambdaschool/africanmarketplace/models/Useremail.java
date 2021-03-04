@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 
 @Entity
-@Table (name = "useremails")
+@Table(name = "useremails")
 public class Useremail
     extends Auditable
 {
@@ -14,7 +14,7 @@ public class Useremail
      * The primary key (long) of the useremails table
      */
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long useremailid;
 
     /**
@@ -35,7 +35,7 @@ public class Useremail
     @ManyToOne
     @JoinColumn(name = "userid",
         nullable = false)
-    @JsonIgnoreProperties (value = "useremails", allowSetters = true)
+    @JsonIgnoreProperties(value = "useremails", allowSetters = true)
     private User user;
 
     /**
@@ -120,4 +120,3 @@ public class Useremail
         this.user = user;
     }
 }
-

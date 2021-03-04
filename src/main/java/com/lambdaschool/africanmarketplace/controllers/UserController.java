@@ -2,10 +2,13 @@ package com.lambdaschool.africanmarketplace.controllers;
 
 import com.lambdaschool.africanmarketplace.models.User;
 import com.lambdaschool.africanmarketplace.services.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -191,6 +194,7 @@ public class UserController
      * @param id the primary key of the user you wish to delete
      * @return Status of OK
      */
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping(value = "/user/{id}")
     public ResponseEntity<?> deleteUserById(
         @PathVariable
@@ -198,5 +202,24 @@ public class UserController
     {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Returns the User record for the currently authenticated user based off of the supplied access token
+     * <br>Example: <a href="http://localhost:2019/users/getuserinfo">http://localhost:2019/users/getuserinfo</a>
+     *
+     * @param authentication The authenticated user object provided by Spring Security
+     * @return JSON of the current user. Status of OK
+     * @see UserService#findByName(String) UserService.findByName(authenticated user)
+     */
+    @ApiOperation(value = "returns the currently authenticated user",
+        response = User.class)
+    @GetMapping(value = "/getuserinfo",
+        produces = {"application/json"})
+    public ResponseEntity<?> getCurrentUserInfo(Authentication authentication)
+    {
+        User u = userService.findByName(authentication.getName());
+        return new ResponseEntity<>(u,
+            HttpStatus.OK);
     }
 }

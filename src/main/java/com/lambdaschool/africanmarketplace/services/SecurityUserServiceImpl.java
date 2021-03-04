@@ -9,8 +9,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service (value = "securityUserService")
-public class SecurityUserServiceImpl implements UserDetailsService {
+@Service(value = "securityUserService")
+public class SecurityUserServiceImpl
+    implements UserDetailsService
+{
+    /**
+     * Ties this implementation to the User Repository so we can find a user in the database.
+     */
     @Autowired
     private UserRepository userrepos;
 
@@ -24,7 +29,8 @@ public class SecurityUserServiceImpl implements UserDetailsService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String s)
-        throws ResourceNotFoundException
+        throws
+        ResourceNotFoundException
     {
         User user = userrepos.findByUsername(s.toLowerCase());
         if (user == null)

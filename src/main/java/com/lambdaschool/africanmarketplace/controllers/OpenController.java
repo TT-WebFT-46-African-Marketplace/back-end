@@ -49,14 +49,16 @@ public class OpenController
      * @return The token access and other relevent data to token access. Status of CREATED. The location header to look up the new user.
      * @throws URISyntaxException we create some URIs during this method. If anything goes wrong with that creation, an exception is thrown.
      */
-    @PostMapping (value = "/createnewuser",
+    @PostMapping(value = "/createnewuser",
         consumes = {"application/json"},
         produces = {"application/json"})
     public ResponseEntity<?> addSelf(
         HttpServletRequest httpServletRequest,
         @Valid
-        @RequestBody UserMinimum newminuser)
-        throws URISyntaxException
+        @RequestBody
+            UserMinimum newminuser)
+        throws
+        URISyntaxException
     {
         // Create the user
         User newuser = new User();
@@ -82,8 +84,9 @@ public class OpenController
         responseHeaders.setLocation(newUserURI);
 
         // return the access token
+        // To get the access token, surf to the endpoint /login just as if a client had done this.
         RestTemplate restTemplate = new RestTemplate();
-        String requestURI = "http://localhost" + ":" + httpServletRequest.getLocalPort() + "/login";
+        String requestURI = "http://" + httpServletRequest.getServerName() + (httpServletRequest.getServerName().equalsIgnoreCase("localhost") ? ":" + httpServletRequest.getLocalPort() : "") + "/login";
 
         List<MediaType> acceptableMediaTypes = new ArrayList<>();
         acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
@@ -120,7 +123,7 @@ public class OpenController
      * Prevents no favicon.ico warning from appearing in the logs. @ApiIgnore tells Swagger to ignore documenting this as an endpoint.
      */
     @ApiIgnore
-    @GetMapping ("favicon.ico")
+    @GetMapping("favicon.ico")
     public void returnNoFavicon()
     {
 

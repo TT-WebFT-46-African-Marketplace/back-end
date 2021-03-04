@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
+
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@PropertySource(value = "file:/Users/justi/africanmarketplace.properties", ignoreResourceNotFound = true)
-public class AfricanMarketplaceApplication {
-
+public class AfricanMarketplaceApplication
+{
+    /**
+     * Connect to the system environment where environment variables live.
+     */
     @Autowired
     private static Environment env;
 
@@ -31,20 +34,26 @@ public class AfricanMarketplaceApplication {
         if (System.getenv(envvar) == null)
         {
             stop = true;
-            System.out.println("***** Environment Variable " + envvar + " Not Found *****");
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main method to start the application.
+     *
+     * @param args Not used in this application.
+     */
+    public static void main(String[] args)
+    {
+        // Check to see if the environment variables exists. If they do not, stop execution of application.
         checkEnvironmentVariable("OAUTHCLIENTID");
         checkEnvironmentVariable("OAUTHCLIENTSECRET");
-
         if (!stop)
         {
-            // so run the application!
             SpringApplication.run(AfricanMarketplaceApplication.class,
                 args);
+        } else
+        {
+            System.out.println("Environment Variables NOT SET!!!");
         }
     }
-
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
-@Service (value = "useremailService")
+@Service(value = "useremailService")
 public class UseremailServiceImpl
     implements UseremailService
 {

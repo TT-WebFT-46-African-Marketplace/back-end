@@ -3,40 +3,55 @@ package com.lambdaschool.africanmarketplace.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Entity
-@Table (name = "items")
-@JsonIgnoreProperties(value = "hasPrice")
-public class Item extends Auditable{
+@Table(name = "items")
+public class Item{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long itemid;
+    @Column(unique = true)
+    private long itemcode;
 
-    @Column(nullable = false, unique = true)
+
     private String name;
-
-    @Transient
-    public boolean hasPrice = false;
-
-    private double price;
-
+    private String type;
     private String description;
+    private String location;
+    private double itemcost;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = "item", allowSetters = true)
-    private Set<ShopItem> stock = new HashSet<>();
-
-    public Item(){
+    public Item() {
     }
 
-    public long getItemid() {
-        return itemid;
+    public Item(String name, String type, String description, String location, double itemcost, User user) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.location = location;
+        this.itemcost = itemcost;
+        this.user = user;
     }
 
-    public void setItemid(long itemid) {
-        this.itemid = itemid;
+
+    @ManyToOne
+    @JoinColumn(name = "userid",nullable = false)
+    @JsonIgnoreProperties("items")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public long getItemcode() {
+        return itemcode;
+    }
+
+    public void setItemcode(long itemcode) {
+        this.itemcode = itemcode;
     }
 
     public String getName() {
@@ -47,13 +62,12 @@ public class Item extends Auditable{
         this.name = name;
     }
 
-    public double getPrice() {
-        return price;
+    public String getType() {
+        return type;
     }
 
-    public void setPrice(double price) {
-        hasPrice = true;
-        this.price = price;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {
@@ -64,12 +78,21 @@ public class Item extends Auditable{
         this.description = description;
     }
 
-    public Set<ShopItem> getStock() {
-        return stock;
+    public String getLocation() {
+        return location;
     }
 
-    public void setStock(Set<ShopItem> stock) {
-        this.stock = stock;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public double getItemcost() {
+        return itemcost;
+    }
+
+    public void setItemcost(double itemcost) {
+        this.itemcost = itemcost;
     }
 }
+
 

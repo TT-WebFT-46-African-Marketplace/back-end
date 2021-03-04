@@ -15,7 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/useremails")
-public class UseremailController {
+public class UseremailController
+{
+    /**
+     * Using the Useremail service to process user, email combinations data
+     */
     @Autowired
     UseremailService useremailService;
 
@@ -25,7 +29,7 @@ public class UseremailController {
      *
      * @return JSON list of all users emails
      */
-    @GetMapping (value = "/useremails",
+    @GetMapping(value = "/useremails",
         produces = "application/json")
     public ResponseEntity<?> listAllUseremails()
     {
@@ -97,12 +101,13 @@ public class UseremailController {
      * @throws URISyntaxException Exception if something does not work in creating the location header
      * @see UseremailService#save(long, String) UseremailService.save(long, String)
      */
-    @PostMapping (value = "/user/{userid}/email/{emailaddress}")
+    @PostMapping(value = "/user/{userid}/email/{emailaddress}")
     public ResponseEntity<?> addNewUserEmail(
         @PathVariable
             long userid,
         @PathVariable
-            String emailaddress) throws URISyntaxException
+            String emailaddress) throws
+                                 URISyntaxException
     {
         Useremail newUserEmail = useremailService.save(userid,
             emailaddress);

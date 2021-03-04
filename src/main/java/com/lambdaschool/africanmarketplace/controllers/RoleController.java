@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping ("/roles")
+@RequestMapping("/roles")
 public class RoleController
 {
     /**
@@ -117,7 +117,7 @@ public class RoleController
      * @param newRole The new name (String) for the role
      * @return Status of OK
      */
-    @PutMapping (value = "/role/{roleid}",
+    @PutMapping(value = "/role/{roleid}",
         consumes = {"application/json"})
     public ResponseEntity<?> putUpdateRole(
         @PathVariable

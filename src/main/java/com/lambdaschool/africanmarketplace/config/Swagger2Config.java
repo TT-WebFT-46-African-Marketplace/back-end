@@ -46,10 +46,10 @@ public class Swagger2Config
     private ApiInfo apiEndPointsInfo()
     {
         return new ApiInfoBuilder().title("Bookstore Model Example")
-            .description("Bookstore Model Example")
+            .description("African-Market-Place")
             .contact(new Contact("John Mitchell",
                 "http://www.lambdaschool.com",
-                "john@lambdaschool.com"))
+                "justinmavity1021@gmail.com"))
             .license("MIT")
             .licenseUrl("https://github.com/LambdaSchool/java-usermodel/blob/master/LICENSE")
             .version("1.0.0")

@@ -16,14 +16,26 @@ import java.util.List;
 
 @Transactional
 @Service(value = "userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl
+    implements UserService
+{
+    /**
+     * Connects this service to the User table.
+     */
     @Autowired
     private UserRepository userrepos;
 
+    /**
+     * Connects this service to the Role table
+     */
     @Autowired
     private RoleService roleService;
 
-    public User findUserById(long id) throws ResourceNotFoundException
+    @Autowired
+    private HelperFunctions helperFunctions;
+
+    public User findUserById(long id) throws
+                                      ResourceNotFoundException
     {
         return userrepos.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
@@ -95,7 +107,17 @@ public class UserServiceImpl implements UserService{
             Role addRole = roleService.findRoleById(ur.getRole()
                 .getRoleid());
             newUser.getRoles()
-                .add(new UserRoles(newUser, addRole));
+                .add(new UserRoles(newUser,
+                    addRole));
+        }
+
+        newUser.getUseremails()
+            .clear();
+        for (Useremail ue : user.getUseremails())
+        {
+            newUser.getUseremails()
+                .add(new Useremail(newUser,
+                    ue.getUseremail()));
         }
 
         return userrepos.save(newUser);
@@ -109,42 +131,66 @@ public class UserServiceImpl implements UserService{
     {
         User currentUser = findUserById(id);
 
-        if (user.getUsername() != null)
+        // update own thing
+        // admin update
+        if (helperFunctions.isAuthorizedToMakeChange(currentUser.getUsername()))
         {
-            currentUser.setUsername(user.getUsername()
-                .toLowerCase());
-        }
-
-        if (user.getPassword() != null)
-        {
-            currentUser.setPasswordNoEncrypt(user.getPassword());
-        }
-
-        if (user.getPrimaryemail() != null)
-        {
-            currentUser.setPrimaryemail(user.getPrimaryemail()
-                .toLowerCase());
-        }
-
-        if (user.getRoles()
-            .size() > 0)
-        {
-            currentUser.getRoles()
-                .clear();
-            for (UserRoles ur : user.getRoles())
+            if (user.getUsername() != null)
             {
-                Role addRole = roleService.findRoleById(ur.getRole()
-                    .getRoleid());
-
-                currentUser.getRoles()
-                    .add(new UserRoles(currentUser, addRole));
+                currentUser.setUsername(user.getUsername()
+                    .toLowerCase());
             }
-        }
 
-        return userrepos.save(currentUser);
+            if (user.getPassword() != null)
+            {
+                currentUser.setPasswordNoEncrypt(user.getPassword());
+            }
+
+            if (user.getPrimaryemail() != null)
+            {
+                currentUser.setPrimaryemail(user.getPrimaryemail()
+                    .toLowerCase());
+            }
+
+            if (user.getRoles()
+                .size() > 0)
+            {
+                currentUser.getRoles()
+                    .clear();
+                for (UserRoles ur : user.getRoles())
+                {
+                    Role addRole = roleService.findRoleById(ur.getRole()
+                        .getRoleid());
+
+                    currentUser.getRoles()
+                        .add(new UserRoles(currentUser,
+                            addRole));
+                }
+            }
+
+            if (user.getUseremails()
+                .size() > 0)
+            {
+                currentUser.getUseremails()
+                    .clear();
+                for (Useremail ue : user.getUseremails())
+                {
+                    currentUser.getUseremails()
+                        .add(new Useremail(currentUser,
+                            ue.getUseremail()));
+                }
+            }
+
+            return userrepos.save(currentUser);
+        } else
+        {
+            // note we should never get to this line but is needed for the compiler
+            // to recognize that this exception can be thrown
+            throw new ResourceNotFoundException("This user is not authorized to make change");
+        }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Override
     public void deleteAll()
     {

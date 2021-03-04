@@ -1,95 +1,87 @@
 package com.lambdaschool.africanmarketplace.services;
 
-import com.lambdaschool.africanmarketplace.exceptions.ResourceFoundException;
-import com.lambdaschool.africanmarketplace.exceptions.ResourceNotFoundException;
 import com.lambdaschool.africanmarketplace.models.Item;
+
 import com.lambdaschool.africanmarketplace.repositories.ItemRepository;
+import com.lambdaschool.africanmarketplace.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.ResourceAccessException;
 
+import org.springframework.transaction.annotation.Transactional;
+
+
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
-@Service ("itemService")
+@Service(value = "itemservices")
 public class ItemServiceImpl implements ItemService{
     @Autowired
-    UserAuditing userAuditing;
-
+    ItemRepository itemrepo;
     @Autowired
-    ItemRepository itemrepos;
+    UserRepository userrepo;
 
-    @Autowired
-    ShopItemService shopService;
 
     @Override
-    public List<Item> findALl() {
+    public Item findItemById(long id) throws EntityNotFoundException {
+        return itemrepo.findById(id)
+            .orElseThrow(()->new EntityNotFoundException("item "+ id ));
+    }
+
+    @Override
+    public List<Item> listAllItems() {
         List<Item> list = new ArrayList<>();
-        itemrepos.findAll()
-            .iterator()
-            .forEachRemaining(list::add);
+        itemrepo.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
 
     @Override
-    public Item findItemById(long id) {
-        return itemrepos.findById(id)
-            .orElseThrow(()-> new ResourceAccessException("Item with id " + id + " Not Found!"));
+    public List<Item> findAll() {
+        List<Item> list = new ArrayList<>();
+        itemrepo.findAll().iterator().forEachRemaining(list::add);
+        return list;
     }
 
     @Transactional
     @Override
-    public void delete(long id) {
-        itemrepos.findById(id)
-            .orElseThrow(()-> new ResourceNotFoundException("Item id " + id + " not found!"));
+    public void deleteAllItems() {
+
+        itemrepo.deleteAll();
     }
 
     @Transactional
     @Override
     public Item save(Item item) {
-        if(item.getStock().size() > 0){
-            throw new ResourceFoundException("Shops are not updates through Items");
-        }
-        Item newItem = new Item();
-        if(item.getItemid() != 0){
-            newItem = itemrepos.findById(item.getItemid())
-                .orElseThrow(()-> new ResourceNotFoundException("Item id " + item.getItemid() + " not found"));
-        }
-        newItem.setName(item.getName());
-        newItem.setDescription(item.getDescription());
-        newItem.setPrice(item.getPrice());
-        return itemrepos.save(newItem);
-    }
 
+        Item newItem = new Item();
+
+        if(item.getItemcode() !=0){
+            findItemById(item.getItemcode());
+            newItem.setItemcode(item.getItemcode());
+        }
+
+        newItem.setDescription(item.getDescription());
+        newItem.setItemcost(item.getItemcost());
+        newItem.setLocation(item.getLocation());
+        newItem.setName(item.getName());
+        newItem.setType(item.getType());
+        newItem.setUser(userrepo.findByUsername(item.getUser().getUsername()));
+
+
+
+        //saving
+        return itemrepo.save(newItem);
+
+    }
     @Transactional
     @Override
-    public Item update(long id, Item item) {
-
-        if(item.getStock().size() > 0){
-            throw new ResourceFoundException("Shops.cannot be updated through this process");
+    public void delete(long itemcode) {
+        if(itemrepo.findById(itemcode).isPresent()){
+            itemrepo.deleteById(itemcode);
         }
-
-        Item currentItem = itemrepos.findById(id)
-            .orElseThrow(()-> new ResourceNotFoundException("Item id " + id + " not found"));
-
-        if(item.getName() != null){
-            currentItem.setName(item.getName());
+        else{
+            throw new EntityNotFoundException("Item "+ itemcode + " Not Found");
         }
-        if(item.hasPrice){
-            currentItem.setPrice(item.getPrice());
-        }
-        if(item.getDescription() != null){
-            currentItem.setDescription(item.getDescription());
-        }
-        return itemrepos.save(currentItem);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void deleteAll() {
-        itemrepos.deleteAll();
     }
 }

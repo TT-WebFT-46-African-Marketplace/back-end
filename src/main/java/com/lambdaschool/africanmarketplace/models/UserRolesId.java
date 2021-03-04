@@ -1,28 +1,66 @@
 package com.lambdaschool.africanmarketplace.models;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-public class UserRolesId implements Serializable {
+@Embeddable
+public class UserRolesId
+    implements Serializable
+{
+    /**
+     * The id of the user
+     */
     private long user;
 
+    /**
+     * The id of the role
+     */
     private long role;
 
-    public UserRolesId() {
+    /**
+     * The default constructor required by JPA
+     */
+    public UserRolesId()
+    {
     }
 
-    public long getUser() {
+    /**
+     * Getter for the user id
+     *
+     * @return long the user id
+     */
+    public long getUser()
+    {
         return user;
     }
 
-    public void setUser(long user) {
+    /**
+     * Setter for the user id
+     *
+     * @param user the new user id for this object
+     */
+    public void setUser(long user)
+    {
         this.user = user;
     }
 
-    public long getRole() {
+    /**
+     * Getter for the role id
+     *
+     * @return long the role id
+     */
+    public long getRole()
+    {
         return role;
     }
 
-    public void setRole(long role) {
+    /**
+     * The setter for the role id
+     *
+     * @param role the new role id for this object
+     */
+    public void setRole(long role)
+    {
         this.role = role;
     }
 
@@ -45,6 +83,6 @@ public class UserRolesId implements Serializable {
     @Override
     public int hashCode()
     {
-        return 7;
+        return 37;
     }
 }

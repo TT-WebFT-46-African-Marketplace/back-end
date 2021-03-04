@@ -2,18 +2,16 @@ package com.lambdaschool.africanmarketplace.services;
 
 import com.lambdaschool.africanmarketplace.models.Item;
 
+
 import java.util.List;
 
 public interface ItemService {
-    List<Item> findALl();
-
+    List<Item> listAllItems();
+    Item save(Item item);
+    void deleteAllItems();
     Item findItemById(long id);
 
-    void delete(long id);
+    List<Item> findAll();
 
-    Item save(Item item);
-
-    Item update(long id, Item item);
-
-    void deleteAll();
+    void delete(long itemcode);
 }
