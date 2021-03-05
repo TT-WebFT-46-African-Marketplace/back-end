@@ -51,7 +51,7 @@ public class ResourceServerConfig
             .antMatchers(HttpMethod.POST, "/users/**").hasAnyRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/users/**").hasAnyRole("ADMIN")
-            .antMatchers("/useremails/**", "/oauth/revoke-token","/logout").authenticated()
+            .antMatchers(HttpMethod.POST, "/useremails/**", "/oauth/revoke-token","/logout").authenticated()
             .antMatchers("/roles/**").hasAnyRole("ADMIN")
             .and()
             .exceptionHandling()
